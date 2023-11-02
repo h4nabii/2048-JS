@@ -12,6 +12,7 @@
   "author": "h4nabii <leon_xenos.xu@foxmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/lodash": "^4.14.200",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "css-loader": "^6.8.1",
@@ -26,5 +27,8 @@
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }

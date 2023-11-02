@@ -1,45 +1,76 @@
-$page-width: 1000px;
+$page-width: 700px;
+$page-padding: 40px;
 $theme-color: #66ccff;
+
+body {
+  background-color: $theme-color;
+}
 
 .app {
   margin: 0 auto;
   width: $page-width;
+  padding: 40px 0;
 }
 
-.header {
-  background-color: $theme-color;
+.data {
+  $height: 100px;
+
   display: flex;
-  height: 100px;
-  padding: 10px;
+  height: $height;
   box-sizing: border-box;
 
+  padding: 0 20px;
+
   h1 {
-    height: 80px;
-    line-height: 80px;
+    height: $height;
+    line-height: $height;
     margin: 0;
+    font-size: 60px;
+    flex-grow: 1;
   }
 
-  /*
-  ul, li, ol {
-    list-style: none;
+  .score-block-list {
+    height: $height;
+    display: flex;
+
+    .score-block {
+      $margin: 8px;
+      height: $height - 2*$margin;
+      margin: $margin;
+
+      width: 200px;
+      padding: 10px;
+      box-sizing: border-box;
+      background-color: lightyellow;
+      border-radius: 12px;
+
+      text-align: center;
+
+      .label {
+        font: 20px bold;
+      }
+
+      .score {
+        font: 20px bold;
+        margin-top: 6px;
+      }
+    }
   }
-  */
 }
 
 .main {
-  padding: 20px;
+  $block-length: 150px;
+  $block-padding: 20px;
+  $shadow-offset: 6px;
+  $board-length: 4 * $block-length + 4 * $block-padding;
 
-  .game {
-    $block-length: 150px;
-    $block-padding: 20px;
-    $shadow-offset: 6px;
-    $board-length: 4 * $block-length + 4 * $block-padding;
-
+  .grid {
     display: grid;
     grid-template: repeat(4, 1fr) / repeat(4, 1fr);
     justify-items: center;
     align-items: center;
 
+    position: relative;
 
     margin: 0 auto;
     padding: 0.5 * $block-padding;
@@ -47,36 +78,63 @@ $theme-color: #66ccff;
     height: $board-length;
     background-color: $theme-color;
 
-    .block {
+    .cell {
       width: $block-length;
       height: $block-length;
       line-height: $block-length;
       background-color: white;
       font-size: 0;
+    }
+  }
 
-      &.active {
+  .tile-list {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    margin: 0 auto;
+    padding: 0.5 * $block-padding;
+    width: $board-length;
+    height: $board-length;
+
+    .tile {
+      position: absolute;
+
+      width: $block-length;
+      height: $block-length;
+      line-height: $block-length;
+      background-color: lightyellow;
+      font-size: 60px;
+      text-align: center;
+
+      box-shadow: $shadow-offset $shadow-offset 0 0;
+      transform: translate(-$shadow-offset * 0.5, -$shadow-offset * 0.5);
+      animation: show 0.2s;
+    }
+
+    @for $row from 1 through 4 {
+      @for $col from 1 through 4 {
+        .tile-#{$row}-#{$col} {
+          top: ($row - 1) * ($block-length + $block-padding) + $block-padding;
+          left: ($col - 1) * ($block-length + $block-padding)+ $block-padding;
+          transition: top 0.2s, left 0.2s;
+        }
+      }
+    }
+
+    @keyframes show {
+      0% {
+        box-shadow: none;
+        transform: translate(0, 0);
+        background-color: white;
+        color: white;
+      }
+
+      100% {
         box-shadow: $shadow-offset $shadow-offset 0 0;
         transform: translate(-$shadow-offset * 0.5, -$shadow-offset * 0.5);
         background-color: lightyellow;
-        font-size: 60px;
-        text-align: center;
-        animation: show 0.2s;
-      }
-
-      @keyframes show {
-        0% {
-          box-shadow: none;
-          transform: translate(0, 0);
-          background-color: white;
-          color: white;
-        }
-
-        100% {
-          box-shadow: $shadow-offset $shadow-offset 0 0;
-          transform: translate(-$shadow-offset * 0.5, -$shadow-offset * 0.5);
-          background-color: lightyellow;
-          color: black;
-        }
+        color: black;
       }
     }
   }
