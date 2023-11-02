@@ -5,6 +5,9 @@ module.exports = {
     entry: {
         index: "./src/index.ts",
     },
+    optimization: {
+        runtimeChunk: "single",
+    },
     output: {
         filename: "[name].bundle.js",
         path: path.resolve(__dirname, "dist"),
