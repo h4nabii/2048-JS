@@ -8,6 +8,8 @@ import InputManager from "./entity/InputManager";
 import DisplayManager from "./entity/DisplayManager";
 
 let doms = {
+    bestScore: document.querySelector("#best-score"),
+    score: document.querySelector("#score"),
     blocks: document.querySelector(".main .tile-list"),
 };
 
@@ -44,10 +46,10 @@ for (let [event, keys] of inputManager.getKeyMap()) {
     console.log(event, ":", keys.join(", "));
 }
 
-inputManager.bindKey("w", "w");
-inputManager.bindKey("ArrowUp", "w");
-inputManager.removeEvent("a");
-inputManager.removeEvent(Event.moveDown);
+// inputManager.bindKey("w", "w");
+// inputManager.bindKey("ArrowUp", "w");
+// inputManager.removeEvent("a");
+// inputManager.removeEvent(Event.moveDown);
 
 for (let [event, keys] of inputManager.getKeyMap()) {
     console.log(event, ":", keys.join(", "));
@@ -65,6 +67,7 @@ inputManager.on(["moveUp", "moveDown", "moveLeft", "moveRight"], (event) => {
     } else {
         let state = game.move(dir);
         console.log(state.tileChanges);
+        doms.score.textContent = +doms.score.textContent + state.scoreEarned + "";
 
         state.tileChanges.move.forEach(change => {
             console.log("origin", ...change.origin, "target", ...change.target);

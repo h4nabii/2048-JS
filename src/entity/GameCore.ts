@@ -32,8 +32,18 @@ export interface CellInfo {
 }
 
 interface LoopInfo {
-    rowLoop: { start: number, end: number, step: number, offset: number },
-    colLoop: { start: number, end: number, step: number, offset: number },
+    rowLoop: {
+        start: number,
+        end: number,
+        step: number,
+        offset: number
+    },
+    colLoop: {
+        start: number,
+        end: number,
+        step: number,
+        offset: number
+    },
 }
 
 export default class GameCore {
@@ -41,6 +51,7 @@ export default class GameCore {
     private readonly height: number;
     private readonly data: Grid<Tile>;
 
+    private score: number = 0;
 
     public constructor(height: number = 4, width: number = 4) {
         this.height = height;
@@ -96,7 +107,11 @@ export default class GameCore {
         }
     }
 
-    private* moveTraversal(dir: Direction): Generator<{ cur: Position, next: Position, merge: boolean }> {
+    private* moveTraversal(dir: Direction): Generator<{
+        cur: Position,
+        next: Position,
+        merge: boolean
+    }> {
         let mergePositionList = new Set<string>;
 
         let info = this.getLoopInfo(dir);
@@ -150,6 +165,7 @@ export default class GameCore {
                 let mergedValue = this.data.get(...next)?.valueOf() * 2;
                 this.data.put(new Tile(mergedValue), ...next);
                 state.scoreEarned += mergedValue;
+                this.score += mergedValue;
                 state.tileChanges.merge.push([...next]);
             }
         }
