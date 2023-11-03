@@ -7,28 +7,30 @@ import GameCore, {Direction} from "./entity/GameCore";
 import InputManager from "./entity/InputManager";
 import DisplayManager from "./entity/DisplayManager";
 
-let doms = {
-    bestScore: document.querySelector("#best-score"),
-    score: document.querySelector("#score"),
-    blocks: document.querySelector(".main .tile-list"),
-};
-
-let display = new DisplayManager({
-    element: doms.blocks,
-});
-
-let game = new GameCore();
-let cellInfo = game.randomAdd();
-
-display.createTile(cellInfo.value, ...cellInfo.position);
-console.log(game.toString());
-
 enum Event {
     moveUp = "moveUp",
     moveDown = "moveDown",
     moveLeft = "moveLeft",
     moveRight = "moveRight",
+    restart = "restart",
 }
+
+function init(game: GameCore, display: DisplayManager) {
+    let cellInfo = game.randomAdd();
+
+    display.createTile(cellInfo.value, ...cellInfo.position);
+    console.log(game.toString());
+}
+
+let display = new DisplayManager({
+    elements: {
+        tileContainer: document.querySelector(".main .tile-list"),
+        bestScore: document.querySelector("#best-score"),
+        score: document.querySelector("#score"),
+    },
+});
+
+let game = new GameCore();
 
 let inputManager = new InputManager(new Map([
     ["w", Event.moveUp],
@@ -39,23 +41,10 @@ let inputManager = new InputManager(new Map([
     ["ArrowLeft", Event.moveLeft],
     ["ArrowDown", Event.moveDown],
     ["ArrowRight", Event.moveRight],
+    ["r", Event.restart],
 ]));
 
-
-for (let [event, keys] of inputManager.getKeyMap()) {
-    console.log(event, ":", keys.join(", "));
-}
-
-// inputManager.bindKey("w", "w");
-// inputManager.bindKey("ArrowUp", "w");
-// inputManager.removeEvent("a");
-// inputManager.removeEvent(Event.moveDown);
-
-for (let [event, keys] of inputManager.getKeyMap()) {
-    console.log(event, ":", keys.join(", "));
-}
-
-inputManager.on(["moveUp", "moveDown", "moveLeft", "moveRight"], (event) => {
+inputManager.on([Event.moveUp, Event.moveDown, Event.moveLeft, Event.moveRight], (event) => {
     let dir: Direction;
     if (event === Event.moveUp) dir = Direction.UP;
     else if (event === Event.moveDown) dir = Direction.DOWN;
@@ -67,7 +56,6 @@ inputManager.on(["moveUp", "moveDown", "moveLeft", "moveRight"], (event) => {
     } else {
         let state = game.move(dir);
         console.log(state.tileChanges);
-        doms.score.textContent = +doms.score.textContent + state.scoreEarned + "";
 
         state.tileChanges.move.forEach(change => {
             console.log("origin", ...change.origin, "target", ...change.target);
@@ -78,6 +66,7 @@ inputManager.on(["moveUp", "moveDown", "moveLeft", "moveRight"], (event) => {
             setTimeout(() => {
                 state.tileChanges.merge.forEach(pos => {
                     display.mergeTile(...pos);
+                    display.addScore(state.scoreEarned);
                 });
 
                 let cellInfo = game.randomAdd();
@@ -89,3 +78,11 @@ inputManager.on(["moveUp", "moveDown", "moveLeft", "moveRight"], (event) => {
         }
     }
 });
+
+inputManager.on([Event.restart], () => {
+    game.restart();
+    display.reset();
+    init(game, display);
+});
+
+init(game, display);

@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $page-width: 700px;
 $page-padding: 40px;
 $theme-color: #66ccff;
@@ -122,19 +124,23 @@ body {
       }
     }
 
+    @for $times from 1 through 16 {
+      $number: math.pow(2, $times);
+      $color: 4 * $times;
+      .tile-color-#{$number} {
+        background-color: rgb(196 + $color, 196 + $color, 64 - $color);
+      }
+    }
+
     @keyframes show {
       0% {
         box-shadow: none;
         transform: translate(0, 0);
-        background-color: white;
-        color: white;
       }
 
       100% {
         box-shadow: $shadow-offset $shadow-offset 0 0;
         transform: translate(-$shadow-offset * 0.5, -$shadow-offset * 0.5);
-        background-color: lightyellow;
-        color: black;
       }
     }
   }

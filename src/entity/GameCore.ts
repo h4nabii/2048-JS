@@ -49,35 +49,40 @@ interface LoopInfo {
 export default class GameCore {
     private readonly width: number;
     private readonly height: number;
-    private readonly data: Grid<Tile>;
+    private readonly grid: Grid<Tile>;
 
     private score: number = 0;
 
     public constructor(height: number = 4, width: number = 4) {
         this.height = height;
         this.width = width;
-        this.data = new Grid<Tile>(height, width);
+        this.grid = new Grid<Tile>(height, width);
     }
 
     private getRandomAvailable(): [number, number] {
-        if (this.data.full) return null;
-        let availableCells = this.data.availableCells;
+        if (this.grid.full) return null;
+        let availableCells = this.grid.availableCells;
         return availableCells[Math.floor(Math.random() * availableCells.length)];
     }
 
-    set(value: number, row: number, col: number): boolean {
-        if (this.data.full) return false;
-        if (this.data.get(row, col)) return false;
+    restart() {
+        this.grid.clear();
+        this.score = 0;
+    }
 
-        return this.data.put(new Tile(value), row, col);
+    set(value: number, row: number, col: number): boolean {
+        if (this.grid.full) return false;
+        if (this.grid.get(row, col)) return false;
+
+        return this.grid.put(new Tile(value), row, col);
     }
 
     randomAdd(): CellInfo {
-        if (this.data.full) return null;
+        if (this.grid.full) return null;
         let value = GameCore.getRandomNumber();
         let [row, col] = this.getRandomAvailable();
 
-        if (!this.data.put(new Tile(value), row, col)) return null;
+        if (!this.grid.put(new Tile(value), row, col)) return null;
 
         return {value, position: [row, col]};
     }
@@ -117,17 +122,17 @@ export default class GameCore {
         let info = this.getLoopInfo(dir);
         for (let row = info.rowLoop.start; row !== info.rowLoop.end; row += info.rowLoop.step) {
             for (let col = info.colLoop.start; col !== info.colLoop.end; col += info.colLoop.step) {
-                if (!this.data.isAvailable(row, col)) {
+                if (!this.grid.isAvailable(row, col)) {
                     let [nextRow, nextCol] = [row, col];
                     let merge = false;
                     do {
                         nextRow += info.rowLoop.offset;
                         nextCol += info.colLoop.offset;
-                    } while (this.data.isAvailable(nextRow, nextCol));
+                    } while (this.grid.isAvailable(nextRow, nextCol));
 
                     // if (out of bounds || not same value || merged) move back
-                    if (this.data.get(nextRow, nextCol) === null ||
-                        this.data.get(nextRow, nextCol)?.valueOf() !== this.data.get(row, col)?.valueOf() ||
+                    if (this.grid.get(nextRow, nextCol) === null ||
+                        this.grid.get(nextRow, nextCol)?.valueOf() !== this.grid.get(row, col)?.valueOf() ||
                         mergePositionList.has(nextRow + "," + nextCol)) {
                         nextRow -= info.rowLoop.offset;
                         nextCol -= info.colLoop.offset;
@@ -135,7 +140,7 @@ export default class GameCore {
 
                     if (!(nextRow === row && nextCol === col)) {
                         // to merge
-                        if (this.data.get(nextRow, nextCol)?.valueOf() === this.data.get(row, col)?.valueOf()) {
+                        if (this.grid.get(nextRow, nextCol)?.valueOf() === this.grid.get(row, col)?.valueOf()) {
                             mergePositionList.add(nextRow + "," + nextCol);
                             merge = true;
                         }
@@ -157,13 +162,13 @@ export default class GameCore {
         };
 
         for (let {cur, next, merge} of this.moveTraversal(dir)) {
-            this.data.move(...cur, ...next);
+            this.grid.move(...cur, ...next);
             state.moveCount++;
             state.tileChanges.move.push({origin: cur, target: next});
 
             if (merge) {
-                let mergedValue = this.data.get(...next)?.valueOf() * 2;
-                this.data.put(new Tile(mergedValue), ...next);
+                let mergedValue = this.grid.get(...next)?.valueOf() * 2;
+                this.grid.put(new Tile(mergedValue), ...next);
                 state.scoreEarned += mergedValue;
                 this.score += mergedValue;
                 state.tileChanges.merge.push([...next]);
@@ -173,13 +178,20 @@ export default class GameCore {
         return state;
     }
 
-    // TODO: Implement game logic
     get over() {
-        return this.data.full;
+        if (!this.grid.full) return false;
+        for (let i = 1; i <= this.height; i++) {
+            for (let j = 1; j <= this.width; j++) {
+                if (this.grid.get(i, j).valueOf() === this.grid.get(i + 1, j)?.valueOf() ||
+                    this.grid.get(i, j).valueOf() === this.grid.get(i, j + 1)?.valueOf()
+                ) return false;
+            }
+        }
+        return true;
     }
 
     public toString(): string {
-        return this.data.toString();
+        return this.grid.toString();
     }
 
     private static getRandomNumber(): number {

@@ -79,6 +79,10 @@ export default class Grid<T> {
         return true;
     }
 
+    clear() {
+        this.cells.fill(null);
+    }
+
     move(rowFrom: number, colFrom: number, rowTo: number, colTo: number): boolean {
         let indexFrom = this.translate(rowFrom, colFrom);
         let indexTo = this.translate(rowTo, colTo);
