@@ -1,16 +1,17 @@
 import Grid, {Position} from "./Grid";
 import Tile from "./Tile";
-import {Direction} from "./KeyInputManager";
+
+export enum Direction {
+    UP = "UP",
+    DOWN = "DOWN",
+    LEFT = "LEFT",
+    RIGHT = "RIGHT",
+}
 
 export interface GameState {
     score: number,
     over: boolean,
     data: Grid<Tile>,
-}
-
-export enum Action {
-    MOVE = "move",
-    MARGE = "merge",
 }
 
 export interface MoveState {

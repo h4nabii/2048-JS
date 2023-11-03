@@ -3,27 +3,9 @@ import "./normalize.css";
 
 import "./index.scss";
 
-import GameCore from "./entity/GameCore";
-import KeyInputManager from "./entity/KeyInputManager";
+import GameCore, {Direction} from "./entity/GameCore";
+import InputManager from "./entity/InputManager";
 import DisplayManager from "./entity/DisplayManager";
-
-// console.log("------------------------------ Grid Test");
-//
-// let grid = new Grid<Tile>();
-// console.log(grid.toString());
-// grid.put(new Tile(4), 1, 1);
-// console.log(grid.toString());
-// grid.put(new Tile(8), 1, 1);
-// grid.put(new Tile(16), 2, 1);
-// console.log(grid.toString());
-// console.log(grid.get(1, 1).toString());
-// grid.move(1, 1, 4, 4);
-// console.log(grid.toString());
-// grid.move(4, 4, 2, 1);
-// console.log(grid.toString());
-// console.log(grid.availableCells);
-
-console.log("------------------------------ Game Test");
 
 let doms = {
     blocks: document.querySelector(".main .tile-list"),
@@ -39,9 +21,45 @@ let cellInfo = game.randomAdd();
 display.createTile(cellInfo.value, ...cellInfo.position);
 console.log(game.toString());
 
+enum Event {
+    moveUp = "moveUp",
+    moveDown = "moveDown",
+    moveLeft = "moveLeft",
+    moveRight = "moveRight",
+}
 
-let inputManager = new KeyInputManager();
-inputManager.on(KeyInputManager.MOVE, (dir) => {
+let inputManager = new InputManager(new Map([
+    ["w", Event.moveUp],
+    ["a", Event.moveLeft],
+    ["s", Event.moveDown],
+    ["d", Event.moveRight],
+    ["ArrowUp", Event.moveUp],
+    ["ArrowLeft", Event.moveLeft],
+    ["ArrowDown", Event.moveDown],
+    ["ArrowRight", Event.moveRight],
+]));
+
+
+for (let [event, keys] of inputManager.getKeyMap()) {
+    console.log(event, ":", keys.join(", "));
+}
+
+inputManager.bindKey("w", "w");
+inputManager.bindKey("ArrowUp", "w");
+inputManager.removeEvent("a");
+inputManager.removeEvent(Event.moveDown);
+
+for (let [event, keys] of inputManager.getKeyMap()) {
+    console.log(event, ":", keys.join(", "));
+}
+
+inputManager.on(["moveUp", "moveDown", "moveLeft", "moveRight"], (event) => {
+    let dir: Direction;
+    if (event === Event.moveUp) dir = Direction.UP;
+    else if (event === Event.moveDown) dir = Direction.DOWN;
+    else if (event === Event.moveLeft) dir = Direction.LEFT;
+    else if (event === Event.moveRight) dir = Direction.RIGHT;
+
     if (game.over) {
         console.log("Game Over");
     } else {
