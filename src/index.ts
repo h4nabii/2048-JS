@@ -30,6 +30,8 @@ let display = new DisplayManager({
         tileContainer: document.querySelector(".main .tile-list"),
         bestScore: document.querySelector("#best-score"),
         score: document.querySelector("#score"),
+        overMask: document.querySelector(".game-over-mask"),
+        pauseMask: document.querySelector(".pause-mask"),
     },
 });
 
@@ -101,3 +103,18 @@ inputManager.on([Event.restart], () => {
 });
 
 init(game, display, storage);
+
+inputManager.bindElement("#over-restart", Event.restart);
+inputManager.bindElement("#pause-restart", Event.restart);
+inputManager.bindElement("#pause-resume", "resume");
+
+inputManager.bindKey("p", "over");
+inputManager.on(["over"], () => {
+    display.pause();
+});
+
+inputManager.on(["resume"], () => {
+    display.resume();
+});
+
+console.log(inputManager.getKeyMap());

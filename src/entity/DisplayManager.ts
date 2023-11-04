@@ -10,6 +10,8 @@ interface DOMs {
     tileContainer: Element,
     score: Element,
     bestScore: Element,
+    pauseMask: Element,
+    overMask: Element,
 }
 
 export default class DisplayManager {
@@ -33,32 +35,24 @@ export default class DisplayManager {
     }
 
     constructor({
-        elements: {
-            tileContainer,
-            bestScore,
-            score,
-        },
+        elements,
         width = 4,
         height = 4,
         styleName = "tile",
         animateInterval = 200,
     }: DisplayOptions) {
-        if (!(tileContainer instanceof Element))
-            throw Error("DisplayManager: Invalid Construct Parameter");
+        for (let element of Object.values(elements)) {
+            if (!(element instanceof Element))
+                throw Error("DisplayManager: Invalid Construct Parameter");
+        }
 
+        this.doms = elements;
         this.width = width;
         this.height = height;
         this.styleName = styleName;
         this.interval = animateInterval;
 
-        tileContainer.textContent = "";
-        bestScore.textContent = "0";
-        score.textContent = "0";
-        this.doms = {
-            tileContainer,
-            bestScore,
-            score,
-        };
+        this.reset();
     }
 
     createTile(value: number, row: number, col: number) {
@@ -105,9 +99,27 @@ export default class DisplayManager {
         this.doms.bestScore.textContent = score.toString();
     }
 
+    pause() {
+        this.doms.pauseMask.classList.add("active");
+    }
+
+    resume() {
+        let maskClass = this.doms.pauseMask.classList;
+        maskClass.add("inactive");
+        setTimeout(() => {
+            maskClass.remove("active", "inactive");
+        }, 500);
+    }
+
+    over() {
+        this.doms.overMask.classList.add("active");
+    }
+
     reset() {
         this.doms.tileContainer.textContent = "";
         this.doms.score.textContent = "0";
         this.doms.bestScore.textContent = "0";
+        this.doms.pauseMask.classList.remove("active");
+        this.doms.overMask.classList.remove("active");
     }
 }

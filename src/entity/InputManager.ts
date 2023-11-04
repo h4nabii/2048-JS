@@ -28,6 +28,7 @@ export default class InputManager {
     }
 
     bindElement(selector: string, event: string) {
+        this.events.add(event);
         let element = document.querySelector(selector);
         element.addEventListener("click", () => {
             this.pushEvent(event);
