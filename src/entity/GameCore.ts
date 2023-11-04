@@ -2,16 +2,16 @@ import Grid, {Position} from "./Grid";
 import Tile from "./Tile";
 
 export enum Direction {
-    UP = "UP",
-    DOWN = "DOWN",
-    LEFT = "LEFT",
-    RIGHT = "RIGHT",
+    UP = "up",
+    DOWN = "down",
+    LEFT = "left",
+    RIGHT = "right",
 }
 
 export interface GameState {
     score: number,
     over: boolean,
-    data: Grid<Tile>,
+    gird: Grid<Tile<number>>,
 }
 
 export interface MoveState {
@@ -49,14 +49,14 @@ interface LoopInfo {
 export default class GameCore {
     private readonly width: number;
     private readonly height: number;
-    private readonly grid: Grid<Tile>;
+    private readonly grid: Grid<Tile<number>>;
 
     private score: number = 0;
 
     public constructor(height: number = 4, width: number = 4) {
         this.height = height;
         this.width = width;
-        this.grid = new Grid<Tile>(height, width);
+        this.grid = new Grid<Tile<number>>(height, width);
     }
 
     private getRandomAvailable(): [number, number] {
@@ -182,7 +182,7 @@ export default class GameCore {
     get state(): GameState {
         return {
             score: this.score,
-            data: null,
+            gird: null,
             over: this.over,
         };
     }

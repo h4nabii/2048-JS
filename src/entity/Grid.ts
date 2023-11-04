@@ -3,9 +3,9 @@ import * as _ from "lodash";
 export type Position = [number, number];
 
 export default class Grid<T> {
-    private readonly height: number;
-    private readonly width: number;
-    private readonly cells: Array<T>;
+    protected readonly height: number;
+    protected readonly width: number;
+    protected readonly cells: Array<T>;
 
     constructor(height: number = 4, width: number = 4) {
         this.height = height;
@@ -14,7 +14,7 @@ export default class Grid<T> {
         this.cells.fill(null);
     }
 
-    private translate(row: number, col: number): number {
+    protected translate(row: number, col: number): number {
         if (!this.inBounds(row, col)) return -1;
         return (row - 1) * this.width + (col - 1);
     }
@@ -49,7 +49,7 @@ export default class Grid<T> {
     }
 
 
-    isAvailable(row: number, col: number) {
+    isAvailable(row: number, col: number): boolean {
         let index = this.translate(row, col);
         if (index === -1) return false;
         return this.cells[index] === null;
@@ -93,8 +93,7 @@ export default class Grid<T> {
     }
 
     toString(padWidth: number = 10): string {
-        return _
-            .chunk(this.cells, this.width)
+        return this.chunks
             .map(line =>
                 "| "
                 + line

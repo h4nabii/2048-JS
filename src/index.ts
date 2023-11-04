@@ -67,6 +67,8 @@ inputManager.on([Event.moveUp, Event.moveDown, Event.moveLeft, Event.moveRight],
             display.moveTile(...change.origin, ...change.target);
         });
 
+        console.log(state.moveCount);
+
         if (state.moveCount) {
             setTimeout(() => {
                 display.addScore(state.scoreEarned);
@@ -77,15 +79,17 @@ inputManager.on([Event.moveUp, Event.moveDown, Event.moveLeft, Event.moveRight],
                 let cellInfo = game.randomAdd();
                 display.createTile(cellInfo.value, ...cellInfo.position);
 
-                // console.log(dir);
-                // console.log(game.toString());
-                //
+                console.log(dir);
+                console.log(game.toString());
+
                 // console.log(game.over);
                 // console.log(game.state.score);
                 if (game.over) {
                     storage.saveBestScore(game.state.score);
                 }
             }, display.interval);
+        } else {
+            // inputManager.pass();
         }
     }
 });

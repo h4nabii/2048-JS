@@ -73,11 +73,16 @@ export default class InputManager {
             this.callbacks.get(event).push(callback);
         });
     }
+
+    pass() {
+        this.eventRunner.pass();
+    }
 }
 
 class CallbackRunner {
     private callBackQueue: Array<Function> = [];
     private activated: boolean = false;
+    private timer: number;
 
     public interval: number;
     public maxSize: number;
@@ -96,14 +101,20 @@ class CallbackRunner {
     active() {
         if (this.activated) return;
         if (this.callBackQueue.length === 0) return;
-        let callback = this.callBackQueue.shift();
+        this.activated = true;
 
+        let callback = this.callBackQueue.shift();
         callback();
 
-        this.activated = true;
-        setTimeout(() => {
+        this.timer = window.setTimeout(() => {
             this.activated = false;
             this.active();
         }, this.interval);
+    }
+
+    pass() {
+        this.activated = false;
+        window.clearTimeout(this.timer);
+        this.active();
     }
 }

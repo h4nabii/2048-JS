@@ -1,11 +1,11 @@
-export default class Tile {
-    private readonly value: number;
+export default class Tile<T> {
+    protected readonly value: T;
 
-    constructor(value: number = 2) {
+    constructor(value: T) {
         this.value = value;
     }
 
-    valueOf(): number {
+    valueOf(): T {
         return this.value;
     }
 
