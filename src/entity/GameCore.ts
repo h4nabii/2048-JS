@@ -178,6 +178,15 @@ export default class GameCore {
         return state;
     }
 
+    // TODO: set data
+    get state(): GameState {
+        return {
+            score: this.score,
+            data: null,
+            over: this.over,
+        };
+    }
+
     get over() {
         if (!this.grid.full) return false;
         for (let i = 1; i <= this.height; i++) {

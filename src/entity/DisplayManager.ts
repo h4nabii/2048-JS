@@ -98,7 +98,11 @@ export default class DisplayManager {
     }
 
     addScore(score: number) {
-        this.doms.score.textContent = +this.doms.score.textContent + score + "";
+        this.doms.score.textContent = (+this.doms.score.textContent + score).toString();
+    }
+
+    setBestScore(score: number) {
+        this.doms.bestScore.textContent = score.toString();
     }
 
     reset() {

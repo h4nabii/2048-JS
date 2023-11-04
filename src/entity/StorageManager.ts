@@ -50,7 +50,10 @@ export default class StorageManager {
     }
 
     public saveBestScore(score: number) {
-        this.storage.setItem(BEST_SCORE_KEY, score + "");
+        let best = this.loadBestScore();
+        if (score > best) {
+            this.storage.setItem(BEST_SCORE_KEY, score.toString());
+        }
     }
 
     public loadGameState(): GameState {

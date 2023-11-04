@@ -6,6 +6,7 @@ import "./index.scss";
 import GameCore, {Direction} from "./entity/GameCore";
 import InputManager from "./entity/InputManager";
 import DisplayManager from "./entity/DisplayManager";
+import StorageManager from "./entity/StorageManager";
 
 enum Event {
     moveUp = "moveUp",
@@ -15,11 +16,13 @@ enum Event {
     restart = "restart",
 }
 
-function init(game: GameCore, display: DisplayManager) {
+function init(game: GameCore, display: DisplayManager, storage: StorageManager) {
     let cellInfo = game.randomAdd();
-
+    let best = storage.loadBestScore();
     display.createTile(cellInfo.value, ...cellInfo.position);
-    console.log(game.toString());
+    display.setBestScore(best);
+
+    // console.log(game.toString());
 }
 
 let display = new DisplayManager({
@@ -29,6 +32,8 @@ let display = new DisplayManager({
         score: document.querySelector("#score"),
     },
 });
+
+let storage = new StorageManager();
 
 let game = new GameCore();
 
@@ -52,28 +57,34 @@ inputManager.on([Event.moveUp, Event.moveDown, Event.moveLeft, Event.moveRight],
     else if (event === Event.moveRight) dir = Direction.RIGHT;
 
     if (game.over) {
-        console.log("Game Over");
+        // console.log("Game Over");
     } else {
         let state = game.move(dir);
-        console.log(state.tileChanges);
+        // console.log(state.tileChanges);
 
         state.tileChanges.move.forEach(change => {
-            console.log("origin", ...change.origin, "target", ...change.target);
+            // console.log("origin", ...change.origin, "target", ...change.target);
             display.moveTile(...change.origin, ...change.target);
         });
 
         if (state.moveCount) {
             setTimeout(() => {
+                display.addScore(state.scoreEarned);
                 state.tileChanges.merge.forEach(pos => {
                     display.mergeTile(...pos);
-                    display.addScore(state.scoreEarned);
                 });
 
                 let cellInfo = game.randomAdd();
                 display.createTile(cellInfo.value, ...cellInfo.position);
 
-                console.log(dir);
-                console.log(game.toString());
+                // console.log(dir);
+                // console.log(game.toString());
+                //
+                // console.log(game.over);
+                // console.log(game.state.score);
+                if (game.over) {
+                    storage.saveBestScore(game.state.score);
+                }
             }, display.interval);
         }
     }
@@ -82,7 +93,7 @@ inputManager.on([Event.moveUp, Event.moveDown, Event.moveLeft, Event.moveRight],
 inputManager.on([Event.restart], () => {
     game.restart();
     display.reset();
-    init(game, display);
+    init(game, display, storage);
 });
 
-init(game, display);
+init(game, display, storage);
