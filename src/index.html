@@ -1,64 +1,65 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>KAHII | 2048</title>
-</head>
-<body>
-
-<div class="app">
-    <header class="data">
+  </head>
+  <body>
+    <div class="app">
+      <header class="data">
         <h1>2048</h1>
         <div class="score-block-list">
-            <div class="score-block">
-                <div class="label">Best</div>
-                <div class="score" id="best-score">Loading</div>
-            </div>
-            <div class="score-block">
-                <div class="label">Score</div>
-                <div class="score" id="score">0</div>
-            </div>
+          <div class="score-block">
+            <div class="label">Best</div>
+            <div class="score" id="best-score">Loading</div>
+          </div>
+          <div class="score-block">
+            <div class="label">Score</div>
+            <div class="score" id="score">0</div>
+          </div>
         </div>
-    </header>
-    <div class="main">
+      </header>
+      <div class="main">
         <div class="grid">
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="cell"></div>
-            <div class="tile-list"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="cell"></div>
+          <div class="tile-list"></div>
         </div>
+      </div>
+      <footer class="footer"></footer>
     </div>
-    <footer class="footer"></footer>
-</div>
-<div class="game-over-mask">
-    <div class="panel">
+    <div class="game-over-mask">
+      <div class="panel">
         <h1 class="title">Game Over</h1>
         <div class="button" id="over-restart">Restart</div>
         <div class="button" id="over-list">Score List</div>
+      </div>
     </div>
-</div>
-<div class="pause-mask">
-    <div class="panel">
+    <div class="pause-mask">
+      <div class="panel">
         <h1 class="title">Paused</h1>
         <div class="button" id="pause-resume">Resume</div>
         <div class="button" id="pause-restart">Restart</div>
+      </div>
     </div>
-</div>
-</body>
+  </body>
 </html>
